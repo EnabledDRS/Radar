@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     let intervalId;
     let isPlaying = true;
     let preloadedImages = [];
-    let speed = 500; // Default speed in milliseconds
+    let speed = parseInt(localStorage.getItem('speed')) || 500; // Default speed in milliseconds or saved value
 
     // Load selected region from localStorage
     const savedRegion = localStorage.getItem('selectedRegion');
@@ -113,6 +113,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (speed > 100) {
             speed -= 100;
             speedDisplay.textContent = `${(speed / 1000).toFixed(1)} s/frame`;
+            localStorage.setItem('speed', speed); // Save speed to localStorage
             if (isPlaying) {
                 clearInterval(intervalId);
                 startAutoPlay();
@@ -124,6 +125,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (speed < 2000) {
             speed += 100;
             speedDisplay.textContent = `${(speed / 1000).toFixed(1)} s/frame`;
+            localStorage.setItem('speed', speed); // Save speed to localStorage
             if (isPlaying) {
                 clearInterval(intervalId);
                 startAutoPlay();
