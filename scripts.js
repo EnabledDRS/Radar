@@ -1,114 +1,144 @@
-document.addEventListener('DOMContentLoaded', async function () {
-    const regionSelect = document.getElementById('regionSelect');
-    const slider = document.getElementById('timeSlider');
-    const image = document.getElementById('sliderImage');
-    const speedSlider = document.getElementById('speedSlider');
-    const speedDisplay = document.getElementById('speedDisplay');
-    const playPauseButton = document.getElementById('playPauseButton');
+/* General container styles */
+.container {
+    width: 90%;
+    max-width: 900px; /* Limit maximum width to 900px */
+    margin: auto;
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
 
-    const regionURLs = {
-        nationwide: "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1000&xp=720&yp=614&ht=700&zoom=2&lonlat=1&gis=1&legend=1&aws=1&gov=KMA&color=C4&wv=1&ht=800&topo=1&gc=T&gc_itv=60&tm=",
-        seoul: "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1000&xp=630&yp=790&ht=700&zoom=4.9&lonlat=1&gis=1&legend=1&aws=1&gov=KMA&color=C4&wv=1&ht=2000&topo=1&gc=T&gc_itv=60&tm=",
-        chungcheong: "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1000&xp=675&yp=680&ht=700&zoom=4.9&lonlat=1&gis=1&legend=1&aws=1&gov=KMA&color=C4&wv=1&ht=2000&topo=1&gc=T&gc_itv=60&tm=",
-        honam: "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1000&xp=630&yp=528&ht=700&zoom=4.9&lonlat=1&gis=1&legend=1&aws=1&gov=KMA&color=C4&wv=1&ht=2000&topo=1&gc=T&gc_itv=60&tm=",
-        gyeongnam: "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1000&xp=790&yp=550&ht=700&zoom=4.9&lonlat=1&gis=1&legend=1&aws=1&gov=KMA&color=C4&wv=1&ht=2000&topo=1&gc=T&gc_itv=60&tm=",
-        gyeongbuk: "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1000&xp=800&yp=660&ht=700&zoom=4.9&lonlat=1&gis=1&legend=1&aws=1&gov=KMA&color=C4&wv=1&ht=2000&topo=1&gc=T&gc_itv=60&tm=",
-        gangwon: "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1000&xp=760&yp=820&ht=700&zoom=4.9&lonlat=1&gis=1&legend=1&aws=1&gov=KMA&color=C4&wv=1&ht=2000&topo=1&gc=T&gc_itv=60&tm=",
-        jeju: "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1000&xp=610&yp=340&ht=700&zoom=4.9&lonlat=1&gis=1&legend=1&aws=1&gov=KMA&color=C4&wv=1&ht=2000&topo=1&gc=T&gc_itv=60&tm="
-    };
+/* Controls container styles */
+.controls-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 0 20px; /* Add some padding to the left and right */
+    box-sizing: border-box; /* Ensure padding is included in the width */
+}
 
-    let baseURL = regionURLs['nationwide'];
-    let intervalId;
-    let isPlaying = true;
-    let preloadedImages = [];
+/* Slider wrapper styles */
+.slider-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    flex-grow: 1; /* Allow the slider-wrapper to grow */
+    width: 100%;
+}
 
-    async function getInternetTime() {
-        const response = await fetch('https://worldtimeapi.org/api/timezone/Asia/Seoul');
-        const data = await response.json();
-        return new Date(data.datetime);
+/* Slider container styles */
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    justify-content: center;
+}
+
+/* Time slider styles */
+#timeSlider {
+    width: 70%; /* Adjust width to prevent line break */
+}
+
+/* Speed controls styles */
+.speed-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+}
+
+/* Speed display styles */
+#speedDisplayContainer {
+    width: 100px; /* Fixed width for the speed display */
+    text-align: center;
+    border: 1px solid #ccc; /* Light grey border */
+    padding: 5px; /* Padding for the speed display */
+    font-size: 14px; /* Font size for the speed display */
+    border-radius: 5px;
+    background-color: #f9f9f9; /* Light grey background */
+    height: 36px; /* Fixed height for consistency with buttons */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Button styles */
+button {
+    padding: 5px 10px;
+    font-size: 14px;
+    background-color: #007bff; /* Blue background */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    height: 36px; /* Match the height of speedDisplayContainer */
+}
+
+button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Image container styles */
+.image-container {
+    text-align: center;
+    max-width: 100%; /* Ensure container doesn't exceed 100% of viewport width */
+    overflow: hidden; /* Ensure no overflow */
+    padding: 0; /* Remove any padding */
+    margin: 0; /* Remove any margin */
+}
+
+/* Image styles */
+#sliderImage {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    max-height: 80vh; /* Ensure image doesn't exceed 80% of viewport height */
+    object-fit: contain; /* Ensure image scales while maintaining aspect ratio */
+    padding: 0; /* Remove any padding */
+    margin: 0; /* Remove any margin */
+}
+
+/* Region select container styles */
+.region-container {
+    display: flex;
+    justify-content: center; /* Center align the region select */
+    margin-top: 20px; /* Add some space above the region select */
+}
+
+/* Refresh time display styles */
+.refresh-container {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 12px;
+    color: gray;
+}
+
+/* Responsive styles for mobile devices */
+@media (max-width: 768px) {
+    .container {
+        width: 100%;
+        padding: 0;
     }
 
-    function formatDate(date) {
-        const y = date.getFullYear();
-        const m = ('0' + (date.getMonth() + 1)).slice(-2);
-        const d = ('0' + date.getDate()).slice(-2);
-        const h = ('0' + date.getHours()).slice(-2);
-        const min = ('0' + date.getMinutes()).slice(-2);
-        return `${y}${m}${d}${h}${min}`;
+    .controls-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding: 0; /* Remove padding for smaller screens */
     }
 
-    async function generateImageURLs() {
-        const urls = [];
-        const nowKST = await getInternetTime();
-
-        nowKST.setMinutes(Math.floor(nowKST.getMinutes() / 5) * 5);
-        nowKST.setSeconds(0);
-        nowKST.setMilliseconds(0);
-
-        for (let i = 0; i < 24; i++) {
-            const date = new Date(nowKST.getTime() - i * 5 * 60000);
-            const formattedDate = formatDate(date);
-            urls.push(baseURL + formattedDate);
-        }
-        return urls.reverse();
+    .image-container {
+        padding: 0;
+        margin: 0;
     }
 
-    async function updateImages() {
-        const images = await generateImageURLs();
-        preloadedImages = images.map(url => {
-            const img = new Image();
-            img.src = url;
-            return img;
-        });
-
-        // Update the image source based on slider value
-        slider.addEventListener('input', function () {
-            const index = slider.value - 1;
-            image.src = preloadedImages[index].src;
-        });
-
-        // Initialize the first image
-        image.src = preloadedImages[0].src;
-
-        // Set up the automatic slide show
-        startAutoPlay();
+    #sliderImage {
+        max-height: 60vh; /* Adjust max-height for smaller screens */
     }
 
-    function startAutoPlay() {
-        const speed = speedSlider.value;
-        clearInterval(intervalId);
-        intervalId = setInterval(() => {
-            slider.value = (parseInt(slider.value) % 24) + 1;
-            const index = slider.value - 1;
-            image.src = preloadedImages[index].src;
-        }, speed);
+    .slider-wrapper {
+        max-width: 100%; /* Remove width restriction for mobile */
     }
-
-    playPauseButton.addEventListener('click', function () {
-        if (isPlaying) {
-            clearInterval(intervalId);
-            playPauseButton.textContent = 'Play';
-        } else {
-            startAutoPlay();
-            playPauseButton.textContent = 'Pause';
-        }
-        isPlaying = !isPlaying;
-    });
-
-    speedSlider.addEventListener('input', function () {
-        const speed = speedSlider.value;
-        speedDisplay.textContent = `${(speed / 1000).toFixed(1)} s/frame`;
-        if (isPlaying) {
-            clearInterval(intervalId);
-            startAutoPlay();
-        }
-    });
-
-    regionSelect.addEventListener('change', function () {
-        baseURL = regionURLs[regionSelect.value];
-        updateImages();
-    });
-
-    // Initial load
-    await updateImages();
-});
+}
