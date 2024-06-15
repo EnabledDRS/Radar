@@ -142,6 +142,9 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Initial load
     await updateImages();
 
+    // Display the correct speed on page load
+    speedDisplay.textContent = `${(speed / 1000).toFixed(1)} s/frame`;
+
     // Update last refresh time
     lastRefresh.textContent += formatDate(new Date(), "display");
 
