@@ -8,10 +8,30 @@
 </head>
 <body>
     <div class="container">
-        <div class="controls">
+        <!-- Controls container -->
+        <div class="controls-container">
+            <!-- Time Slider -->
+            <div class="slider-wrapper">
+                <div class="slider-container">
+                    <label for="timeSlider">시간:</label>
+                    <input type="range" min="1" max="24" value="1" class="slider" id="timeSlider">
+                </div>
+                <div class="speed-controls">
+                    <button id="fasterButton">빠르게</button>
+                    <div id="speedDisplayContainer">0.5 s/frame</div>
+                    <button id="slowerButton">느리게</button>
+                    <button id="playPauseButton">정지</button>
+                </div>
+            </div>
+        </div>
+        <!-- Image Container -->
+        <div class="image-container">
+            <img id="sliderImage" src="" alt="Weather Image">
+        </div>
+        <!-- Region Select Container -->
+        <div class="region-container">
             <div class="slider-container">
                 <label for="regionSelect">지역:</label>
-                <!-- Region Select -->
                 <select id="regionSelect">
                     <option value="nationwide">전국</option>
                     <option value="seoul">수도권</option>
@@ -23,22 +43,10 @@
                     <option value="jeju">제주권</option>
                 </select>
             </div>
-            <!-- Play/Pause Button -->
-            <button id="playPauseButton">Pause</button>
-            <div class="slider-container">
-                <label for="timeSlider">Time:</label>
-                <!-- Time Slider -->
-                <input type="range" min="1" max="24" value="1" class="slider" id="timeSlider">
-            </div>
-            <div class="slider-container">
-                <label for="speedSlider">Speed:</label>
-                <input type="range" min="100" max="2000" value="500" class="slider" id="speedSlider">
-                <span id="speedDisplay">0.5 s/frame</span>
-            </div>
         </div>
-        <!-- Image Container -->
-        <div class="image-container">
-            <img id="sliderImage" src="" alt="Weather Image">
+        <!-- Last Refresh Time -->
+        <div class="refresh-container">
+            <span id="lastRefresh">최종 새로고침: </span>
         </div>
     </div>
     <script src="scripts.js"></script>
