@@ -1,10 +1,23 @@
+/* Reset margins and padding for the body */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #222; /* Dark background for the body */
+    color: #fff; /* Light text color */
+    font-family: Arial, sans-serif;
+}
+
 /* General container styles */
 .container {
-    width: 90%;
+    width: 100%;
     max-width: 900px; /* Limit maximum width to 900px */
     margin: auto;
     text-align: center;
-    font-family: Arial, sans-serif;
+    background-color: #333; /* Dark background */
+    color: #fff; /* Light text color */
+    padding: 20px; /* Padding around the container */
+    border-radius: 10px; /* Rounded corners */
+    box-sizing: border-box;
 }
 
 /* Controls container styles */
@@ -25,6 +38,7 @@
     gap: 10px;
     flex-grow: 1; /* Allow the slider-wrapper to grow */
     width: 100%;
+    margin-top: 10px; /* Add some space above the slider */
 }
 
 /* Slider container styles */
@@ -57,7 +71,8 @@
     padding: 5px; /* Padding for the speed display */
     font-size: 14px; /* Font size for the speed display */
     border-radius: 5px;
-    background-color: #f9f9f9; /* Light grey background */
+    background-color: #444; /* Dark grey background */
+    color: #fff; /* Light text color */
     height: 36px; /* Fixed height for consistency with buttons */
     display: flex;
     justify-content: center;
@@ -80,6 +95,27 @@ button:hover {
     background-color: #0056b3; /* Darker blue on hover */
 }
 
+/* Dropdown styles */
+select {
+    padding: 5px;
+    font-size: 14px;
+    background-color: #444; /* Dark grey background */
+    color: white; /* Light text color */
+    border: none;
+    border-radius: 5px;
+    height: 36px; /* Match the height of other controls */
+}
+
+select option {
+    background-color: #333; /* Darker option background */
+    color: white; /* Light text color */
+}
+
+/* Label styles */
+label {
+    color: #fff; /* Light text color */
+}
+
 /* Image container styles */
 .image-container {
     text-align: center;
@@ -100,17 +136,17 @@ button:hover {
     margin: 0; /* Remove any margin */
 }
 
-/* Region select container styles */
-.region-container {
+/* Region and refresh container styles */
+.region-refresh-container {
     display: flex;
-    justify-content: center; /* Center align the region select */
-    margin-top: 20px; /* Add some space above the region select */
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px; /* Add some space above the container */
 }
 
 /* Refresh time display styles */
 .refresh-container {
-    text-align: center;
-    margin-top: 20px;
+    text-align: right;
     font-size: 12px;
     color: gray;
 }
@@ -119,7 +155,7 @@ button:hover {
 @media (max-width: 768px) {
     .container {
         width: 100%;
-        padding: 0;
+        padding: 10px 0; /* Add top and bottom padding for spacing */
     }
 
     .controls-container {
@@ -140,5 +176,16 @@ button:hover {
 
     .slider-wrapper {
         max-width: 100%; /* Remove width restriction for mobile */
+    }
+
+    .region-refresh-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .refresh-container {
+        text-align: center;
+        margin-top: 10px;
     }
 }
