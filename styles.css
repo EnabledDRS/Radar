@@ -1,0 +1,58 @@
+/* Styles for the container */
+.container {
+    width: 80%;
+    margin: auto;
+    text-align: center;
+}
+
+/* Styles for the controls */
+.controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* Styles for the slider container */
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Styles for the image container */
+.image-container {
+    text-align: center;
+    max-width: 100%; /* Ensure container doesn't exceed 100% of viewport width */
+    overflow: hidden; /* Ensure no overflow */
+}
+
+/* Styles for the image */
+#sliderImage {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    max-height: 80vh; /* Ensure image doesn't exceed 80% of viewport height */
+    object-fit: contain; /* Ensure image scales while maintaining aspect ratio */
+}
+
+/* Styles for the play/pause button */
+#playPauseButton {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    flex-shrink: 0; /* Prevent button from shrinking */
+    width: 100px; /* Fixed width */
+    text-align: center; /* Center text */
+}
+
+/* Styles for the speed display */
+#speedDisplay {
+    margin-left: 10px;
+    flex-shrink: 0; /* Prevent text from shrinking */
+}
