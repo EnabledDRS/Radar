@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Slider Example</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="controls">
+            <div class="slider-container">
+                <label for="regionSelect">지역:</label>
+                <!-- Region Select -->
+                <select id="regionSelect">
+                    <option value="nationwide">전국</option>
+                    <option value="seoul">수도권</option>
+                    <option value="chungcheong">충청권</option>
+                    <option value="honam">호남권</option>
+                    <option value="gyeongnam">경남권</option>
+                    <option value="gyeongbuk">경북권</option>
+                    <option value="gangwon">강원권</option>
+                    <option value="jeju">제주권</option>
+                </select>
+            </div>
+            <!-- Play/Pause Button -->
+            <button id="playPauseButton">Pause</button>
+            <div class="slider-container">
+                <label for="timeSlider">Time:</label>
+                <!-- Time Slider -->
+                <input type="range" min="1" max="24" value="1" class="slider" id="timeSlider">
+            </div>
+            <div class="slider-container">
+                <label for="speedSlider">Speed:</label>
+                <input type="range" min="100" max="2000" value="500" class="slider" id="speedSlider">
+                <span id="speedDisplay">0.5 seconds/frame</span>
+            </div>
+        </div>
+        <!-- Image Container -->
+        <div class="image-container">
+            <img id="sliderImage" src="" alt="Weather Image">
+        </div>
+    </div>
+    <script src="scripts.js"></script>
+</body>
+</html>
