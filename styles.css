@@ -33,26 +33,25 @@ body {
 /* Slider wrapper styles */
 .slider-wrapper {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 10px;
-    flex-grow: 1; /* Allow the slider-wrapper to grow */
+    justify-content: center;
     width: 100%;
-    margin-top: 10px; /* Add some space above the slider */
+    margin-top: 0; /* Remove top margin */
 }
 
 /* Slider container styles */
 .slider-container {
+    flex-grow: 1;
     display: flex;
     align-items: center;
-    gap: 10px;
-    width: 100%;
     justify-content: center;
+    width: 80%; /* Adjust width to desired size */
+    margin: 0 10px; /* Add margin to avoid text overlap */
 }
 
 /* Time slider styles */
 #timeSlider {
-    width: 70%; /* Adjust width to prevent line break */
+    width: 100%; /* Make slider fill the container */
 }
 
 /* Speed controls styles */
@@ -61,6 +60,7 @@ body {
     align-items: center;
     gap: 10px;
     justify-content: center;
+    margin-top: 20px; /* Add some space above the speed controls */
 }
 
 /* Speed display styles */
@@ -93,6 +93,15 @@ button {
 
 button:hover {
     background-color: #0056b3; /* Darker blue on hover */
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+button:focus {
+    outline: none;
+    background-color: #007bff; /* Reset the background color */
 }
 
 /* Dropdown styles */
@@ -151,8 +160,27 @@ label {
     color: gray;
 }
 
+/* Slider label styles */
+.slider-label {
+    font-size: 14px;
+    color: #fff;
+    width: 30px; /* Adjust width to bring closer to the slider */
+}
+
+.slider-label.left {
+    margin-right: 5px; /* Adjust margin to bring label closer */
+}
+
+.slider-label.right {
+    margin-left: 5px; /* Adjust margin to bring label closer */
+}
+
 /* Responsive styles for mobile devices */
 @media (max-width: 768px) {
+    body {
+        padding-top: 60px; /* Keep top padding for spacing */
+    }
+
     .container {
         width: 100%;
         padding: 10px 0; /* Add top and bottom padding for spacing */
@@ -176,6 +204,10 @@ label {
 
     .slider-wrapper {
         max-width: 100%; /* Remove width restriction for mobile */
+    }
+
+    .slider-container {
+        width: 80%; /* Adjust width to maintain layout */
     }
 
     .region-refresh-container {
