@@ -1,155 +1,219 @@
-document.addEventListener('DOMContentLoaded', async function () {
-    const regionSelect = document.getElementById('regionSelect');
-    const slider = document.getElementById('timeSlider');
-    const image = document.getElementById('sliderImage');
-    const speedDisplay = document.getElementById('speedDisplayContainer');
-    const fasterButton = document.getElementById('fasterButton');
-    const slowerButton = document.getElementById('slowerButton');
-    const playPauseButton = document.getElementById('playPauseButton');
-    const lastRefresh = document.getElementById('lastRefresh');
+/* Reset margins and padding for the body */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #222; /* Dark background for the body */
+    color: #fff; /* Light text color */
+    font-family: Arial, sans-serif;
+}
 
-    const regionURLs = {
-        nationwide: "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1000&xp=720&yp=614&ht=700&zoom=2&lonlat=1&gis=1&legend=1&aws=1&gov=KMA&color=C4&wv=1&ht=800&topo=1&gc=T&gc_itv=60&tm=",
-        seoul: "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1000&xp=630&yp=790&ht=700&zoom=4.9&lonlat=1&gis=1&legend=1&aws=1&gov=KMA&color=C4&wv=1&ht=2000&topo=1&gc=T&gc_itv=60&tm=",
-        chungcheong: "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1000&xp=675&yp=680&ht=700&zoom=4.9&lonlat=1&gis=1&legend=1&aws=1&gov=KMA&color=C4&wv=1&ht=2000&topo=1&gc=T&gc_itv=60&tm=",
-        honam: "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1000&xp=630&yp=528&ht=700&zoom=4.9&lonlat=1&gis=1&legend=1&aws=1&gov=KMA&color=C4&wv=1&ht=2000&topo=1&gc=T&gc_itv=60&tm=",
-        gyeongnam: "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1000&xp=790&yp=550&ht=700&zoom=4.9&lonlat=1&gis=1&legend=1&aws=1&gov=KMA&color=C4&wv=1&ht=2000&topo=1&gc=T&gc_itv=60&tm=",
-        gyeongbuk: "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1000&xp=800&yp=660&ht=700&zoom=4.9&lonlat=1&gis=1&legend=1&aws=1&gov=KMA&color=C4&wv=1&ht=2000&topo=1&gc=T&gc_itv=60&tm=",
-        gangwon: "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1000&xp=760&yp=820&ht=700&zoom=4.9&lonlat=1&gis=1&legend=1&aws=1&gov=KMA&color=C4&wv=1&ht=2000&topo=1&gc=T&gc_itv=60&tm=",
-        jeju: "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1000&xp=610&yp=340&ht=700&zoom=4.9&lonlat=1&gis=1&legend=1&aws=1&gov=KMA&color=C4&wv=1&ht=2000&topo=1&gc=T&gc_itv=60&tm="
-    };
+/* General container styles */
+.container {
+    width: 100%;
+    max-width: 900px; /* Limit maximum width to 900px */
+    margin: auto;
+    text-align: center;
+    background-color: #333; /* Dark background */
+    color: #fff; /* Light text color */
+    padding: 20px; /* Padding around the container */
+    border-radius: 10px; /* Rounded corners */
+    box-sizing: border-box;
+}
 
-    let baseURL = regionURLs['nationwide'];
-    let intervalId;
-    let isPlaying = true;
-    let preloadedImages = [];
-    let speed = parseInt(localStorage.getItem('speed')) || 500; // Default speed in milliseconds or saved value
+/* Controls container styles */
+.controls-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 0 20px; /* Add some padding to the left and right */
+    box-sizing: border-box; /* Ensure padding is included in the width */
+}
 
-    // Load selected region from localStorage
-    const savedRegion = localStorage.getItem('selectedRegion');
-    if (savedRegion) {
-        baseURL = regionURLs[savedRegion];
-        regionSelect.value = savedRegion;
+/* Slider wrapper styles */
+.slider-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 0; /* Remove top margin */
+}
+
+/* Slider container styles */
+.slider-container {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80%; /* Adjust width to desired size */
+    margin: 0 10px; /* Add margin to avoid text overlap */
+}
+
+/* Time slider styles */
+#timeSlider {
+    width: 100%; /* Make slider fill the container */
+}
+
+/* Speed controls styles */
+.speed-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px; /* Add some space above the speed controls */
+}
+
+/* Speed display styles */
+#speedDisplayContainer {
+    width: 100px; /* Fixed width for the speed display */
+    text-align: center;
+    border: 1px solid #ccc; /* Light grey border */
+    padding: 5px; /* Padding for the speed display */
+    font-size: 14px; /* Font size for the speed display */
+    border-radius: 5px;
+    background-color: #444; /* Dark grey background */
+    color: #fff; /* Light text color */
+    height: 36px; /* Fixed height for consistency with buttons */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Button styles */
+button {
+    padding: 5px 10px;
+    font-size: 14px;
+    background-color: #007bff; /* Blue background */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    height: 36px; /* Match the height of speedDisplayContainer */
+}
+
+button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+button:focus {
+    outline: none;
+    background-color: #007bff; /* Reset the background color */
+}
+
+/* Dropdown styles */
+select {
+    padding: 5px;
+    font-size: 14px;
+    background-color: #444; /* Dark grey background */
+    color: white; /* Light text color */
+    border: none;
+    border-radius: 5px;
+    height: 36px; /* Match the height of other controls */
+}
+
+select option {
+    background-color: #333; /* Darker option background */
+    color: white; /* Light text color */
+}
+
+/* Label styles */
+label {
+    color: #fff; /* Light text color */
+}
+
+/* Image container styles */
+.image-container {
+    text-align: center;
+    max-width: 100%; /* Ensure container doesn't exceed 100% of viewport width */
+    overflow: hidden; /* Ensure no overflow */
+    padding: 0; /* Remove any padding */
+    margin: 0; /* Remove any margin */
+}
+
+/* Image styles */
+#sliderImage {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    max-height: 80vh; /* Ensure image doesn't exceed 80% of viewport height */
+    object-fit: contain; /* Ensure image scales while maintaining aspect ratio */
+    padding: 0; /* Remove any padding */
+    margin: 0; /* Remove any margin */
+}
+
+/* Region and refresh container styles */
+.region-refresh-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px; /* Add some space above the container */
+}
+
+/* Refresh time display styles */
+.refresh-container {
+    text-align: right;
+    font-size: 12px;
+    color: gray;
+}
+
+/* Slider label styles */
+.slider-label {
+    font-size: 14px;
+    color: #fff;
+    width: 30px; /* Adjust width to bring closer to the slider */
+}
+
+.slider-label.left {
+    margin-right: 5px; /* Adjust margin to bring label closer */
+}
+
+.slider-label.right {
+    margin-left: 5px; /* Adjust margin to bring label closer */
+}
+
+/* Responsive styles for mobile devices */
+@media (max-width: 768px) {
+    body {
+        padding-top: 60px; /* Keep top padding for spacing */
     }
 
-    async function getInternetTime() {
-        const response = await fetch('https://worldtimeapi.org/api/timezone/Asia/Seoul');
-        const data = await response.json();
-        return new Date(data.datetime);
+    .container {
+        width: 100%;
+        padding: 10px 0; /* Add top and bottom padding for spacing */
     }
 
-    function formatDate(date, type = "url") {
-        const y = date.getFullYear();
-        const m = ('0' + (date.getMonth() + 1)).slice(-2);
-        const d = ('0' + date.getDate()).slice(-2);
-        const h = ('0' + date.getHours()).slice(-2);
-        const min = ('0' + date.getMinutes()).slice(-2);
-        const s = ('0' + date.getSeconds()).slice(-2);
-        if (type === "url") {
-            return `${y}${m}${d}${h}${min}`;
-        } else {
-            return `${y}.${m}.${d} ${h}:${min}:${s}`;
-        }
+    .controls-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding: 0; /* Remove padding for smaller screens */
     }
 
-    async function generateImageURLs() {
-        const urls = [];
-        const nowKST = await getInternetTime();
-
-        nowKST.setMinutes(Math.floor(nowKST.getMinutes() / 5) * 5);
-        nowKST.setSeconds(0);
-        nowKST.setMilliseconds(0);
-
-        for (let i = 0; i < 24; i++) {
-            const date = new Date(nowKST.getTime() - i * 5 * 60000);
-            const formattedDate = formatDate(date);
-            urls.push(baseURL + formattedDate);
-        }
-        return urls.reverse();
+    .image-container {
+        padding: 0;
+        margin: 0;
     }
 
-    async function updateImages() {
-        const images = await generateImageURLs();
-        preloadedImages = images.map(url => {
-            const img = new Image();
-            img.src = url;
-            return img;
-        });
-
-        // Update the image source based on slider value
-        slider.addEventListener('input', function () {
-            const index = slider.value - 1;
-            image.src = preloadedImages[index].src;
-        });
-
-        // Initialize the first image
-        image.src = preloadedImages[0].src;
-
-        // Set up the automatic slide show
-        startAutoPlay();
+    #sliderImage {
+        max-height: 60vh; /* Adjust max-height for smaller screens */
     }
 
-    function startAutoPlay() {
-        clearInterval(intervalId);
-        intervalId = setInterval(() => {
-            slider.value = (parseInt(slider.value) % 24) + 1;
-            const index = slider.value - 1;
-            image.src = preloadedImages[index].src;
-        }, speed);
+    .slider-wrapper {
+        max-width: 100%; /* Remove width restriction for mobile */
     }
 
-    playPauseButton.addEventListener('click', function () {
-        if (isPlaying) {
-            clearInterval(intervalId);
-            playPauseButton.textContent = '재생';
-        } else {
-            startAutoPlay();
-            playPauseButton.textContent = '정지';
-        }
-        isPlaying = !isPlaying;
-    });
+    .region-refresh-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
 
-    fasterButton.addEventListener('click', function () {
-        if (speed > 100) {
-            speed -= 100;
-            speedDisplay.textContent = `${(speed / 1000).toFixed(1)} s/frame`;
-            localStorage.setItem('speed', speed); // Save speed to localStorage
-            if (isPlaying) {
-                clearInterval(intervalId);
-                startAutoPlay();
-            }
-        }
-    });
-
-    slowerButton.addEventListener('click', function () {
-        if (speed < 2000) {
-            speed += 100;
-            speedDisplay.textContent = `${(speed / 1000).toFixed(1)} s/frame`;
-            localStorage.setItem('speed', speed); // Save speed to localStorage
-            if (isPlaying) {
-                clearInterval(intervalId);
-                startAutoPlay();
-            }
-        }
-    });
-
-    regionSelect.addEventListener('change', function () {
-        baseURL = regionURLs[regionSelect.value];
-        localStorage.setItem('selectedRegion', regionSelect.value); // Save selected region to localStorage
-        updateImages();
-    });
-
-    // Initial load
-    await updateImages();
-
-    // Display the correct speed on page load
-    speedDisplay.textContent = `${(speed / 1000).toFixed(1)} s/frame`;
-
-    // Update last refresh time
-    lastRefresh.textContent += formatDate(new Date(), "display");
-
-    // Auto refresh every 5 minutes (300,000 milliseconds)
-    setInterval(() => {
-        location.reload();
-    }, 300000);
-});
+    .refresh-container {
+        text-align: center;
+        margin-top: 10px;
+    }
+}
