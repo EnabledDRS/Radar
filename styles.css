@@ -1,27 +1,86 @@
-/* Styles for the container */
+/* General container styles */
 .container {
-    width: 80%;
+    width: 90%;
+    max-width: 900px; /* Limit maximum width to 900px */
     margin: auto;
     text-align: center;
+    font-family: Arial, sans-serif;
 }
 
-/* Styles for the controls */
-.controls {
+/* Controls container styles */
+.controls-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 0 20px; /* Add some padding to the left and right */
+    box-sizing: border-box; /* Ensure padding is included in the width */
+}
+
+/* Slider wrapper styles */
+.slider-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 10px;
-    margin-bottom: 20px;
+    flex-grow: 1; /* Allow the slider-wrapper to grow */
+    width: 100%;
 }
 
-/* Styles for the slider container */
+/* Slider container styles */
 .slider-container {
     display: flex;
     align-items: center;
     gap: 10px;
+    width: 100%;
+    justify-content: center;
 }
 
-/* Styles for the image container */
+/* Time slider styles */
+#timeSlider {
+    width: 70%; /* Adjust width to prevent line break */
+}
+
+/* Speed controls styles */
+.speed-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+}
+
+/* Speed display styles */
+#speedDisplayContainer {
+    width: 100px; /* Fixed width for the speed display */
+    text-align: center;
+    border: 1px solid #ccc; /* Light grey border */
+    padding: 5px; /* Padding for the speed display */
+    font-size: 14px; /* Font size for the speed display */
+    border-radius: 5px;
+    background-color: #f9f9f9; /* Light grey background */
+    height: 36px; /* Fixed height for consistency with buttons */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Button styles */
+button {
+    padding: 5px 10px;
+    font-size: 14px;
+    background-color: #007bff; /* Blue background */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    height: 36px; /* Match the height of speedDisplayContainer */
+}
+
+button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Image container styles */
 .image-container {
     text-align: center;
     max-width: 100%; /* Ensure container doesn't exceed 100% of viewport width */
@@ -30,7 +89,7 @@
     margin: 0; /* Remove any margin */
 }
 
-/* Styles for the image */
+/* Image styles */
 #sliderImage {
     width: 100%;
     height: auto;
@@ -41,31 +100,33 @@
     margin: 0; /* Remove any margin */
 }
 
-/* Styles for the play/pause button */
-#playPauseButton {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    flex-shrink: 0; /* Prevent button from shrinking */
-    width: 100px; /* Fixed width */
-    text-align: center; /* Center text */
+/* Region select container styles */
+.region-container {
+    display: flex;
+    justify-content: center; /* Center align the region select */
+    margin-top: 20px; /* Add some space above the region select */
 }
 
-/* Styles for the speed display */
-#speedDisplay {
-    margin-left: 10px;
-    flex-shrink: 0; /* Prevent text from shrinking */
+/* Refresh time display styles */
+.refresh-container {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 12px;
+    color: gray;
 }
 
-/* Ensure the container is responsive on mobile devices */
+/* Responsive styles for mobile devices */
 @media (max-width: 768px) {
     .container {
         width: 100%;
         padding: 0;
+    }
+
+    .controls-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding: 0; /* Remove padding for smaller screens */
     }
 
     .image-container {
@@ -75,5 +136,9 @@
 
     #sliderImage {
         max-height: 60vh; /* Adjust max-height for smaller screens */
+    }
+
+    .slider-wrapper {
+        max-width: 100%; /* Remove width restriction for mobile */
     }
 }
