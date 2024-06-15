@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     speedSlider.addEventListener('input', function () {
         const speed = speedSlider.value;
-        speedDisplay.textContent = `${(speed / 1000).toFixed(1)} seconds/frame`;
+        speedDisplay.textContent = `${(speed / 1000).toFixed(1)} s/frame`;
         if (isPlaying) {
             clearInterval(intervalId);
             startAutoPlay();
