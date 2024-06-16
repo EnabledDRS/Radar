@@ -20,6 +20,50 @@ body {
     box-sizing: border-box;
 }
 
+/* Coordinates container styles */
+.coordinates-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px; /* Space below the coordinates container */
+}
+
+.coordinates-container input {
+    padding: 0 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100px; /* Width of the input fields */
+    height: 33px; /* Height of the input fields */
+    box-sizing: border-box;
+}
+
+.coordinates-container button {
+    padding: 0 5px;
+    font-size: 14px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    height: 33px; /* Match the height of input fields */
+    box-sizing: border-box;
+}
+
+.coordinates-container button:hover {
+    background-color: #0056b3;
+}
+
+.coordinates-container button:active {
+    transform: scale(0.95);
+}
+
+.coordinates-container button:focus {
+    outline: none;
+    background-color: #007bff;
+}
+
 /* Controls container styles */
 .controls-container {
     display: flex;
@@ -65,30 +109,32 @@ body {
 
 /* Speed display styles */
 #speedDisplayContainer {
-    width: 100px; /* Fixed width for the speed display */
+    width: 120px; /* Adjust width for the speed display */
     text-align: center;
     border: 1px solid #ccc; /* Light grey border */
-    padding: 5px; /* Padding for the speed display */
+    padding: 0 5px; /* Adjust padding for height */
     font-size: 14px; /* Font size for the speed display */
     border-radius: 5px;
     background-color: #444; /* Dark grey background */
     color: #fff; /* Light text color */
-    height: 36px; /* Fixed height for consistency with buttons */
+    height: 33px; /* Fixed height for consistency with buttons */
     display: flex;
     justify-content: center;
     align-items: center;
+    box-sizing: border-box;
 }
 
 /* Button styles */
 button {
-    padding: 5px 10px;
+    padding: 0 5px; /* Adjust padding for height */
     font-size: 14px;
     background-color: #007bff; /* Blue background */
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    height: 36px; /* Match the height of speedDisplayContainer */
+    height: 33px; /* Match the height of speedDisplayContainer */
+    box-sizing: border-box;
 }
 
 button:hover {
@@ -102,27 +148,6 @@ button:active {
 button:focus {
     outline: none;
     background-color: #007bff; /* Reset the background color */
-}
-
-/* Dropdown styles */
-select {
-    padding: 5px;
-    font-size: 14px;
-    background-color: #444; /* Dark grey background */
-    color: white; /* Light text color */
-    border: none;
-    border-radius: 5px;
-    height: 36px; /* Match the height of other controls */
-}
-
-select option {
-    background-color: #333; /* Darker option background */
-    color: white; /* Light text color */
-}
-
-/* Label styles */
-label {
-    color: #fff; /* Light text color */
 }
 
 /* Image container styles */
@@ -145,15 +170,7 @@ label {
     margin: 0; /* Remove any margin */
 }
 
-/* Region and refresh container styles */
-.region-refresh-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 20px; /* Add some space above the container */
-}
-
-/* Refresh time display styles */
+/* Refresh container styles */
 .refresh-container {
     text-align: right;
     font-size: 12px;
@@ -208,12 +225,6 @@ label {
 
     .slider-container {
         width: 80%; /* Adjust width to maintain layout */
-    }
-
-    .region-refresh-container {
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
     }
 
     .refresh-container {
