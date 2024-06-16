@@ -8,6 +8,12 @@
 </head>
 <body>
     <div class="container">
+        <!-- Latitude and Longitude Input -->
+        <div class="coordinates-container">
+            <input type="text" id="latitude" placeholder="위도" />
+            <input type="text" id="longitude" placeholder="경도" />
+            <button id="submitButton">확인</button>
+        </div>
         <!-- Image Container -->
         <div class="image-container">
             <img id="sliderImage" src="" alt="Weather Image">
@@ -26,24 +32,9 @@
             <button id="slowerButton">느리게</button>
             <button id="playPauseButton">정지</button>
         </div>
-        <!-- Region Select Container -->
-        <div class="region-refresh-container">
-            <div class="slider-container">
-                <label for="regionSelect">지역:</label>
-                <select id="regionSelect">
-                    <option value="nationwide">전국</option>
-                    <option value="seoul">수도권</option>
-                    <option value="chungcheong">충청권</option>
-                    <option value="honam">호남권</option>
-                    <option value="gyeongnam">경남권</option>
-                    <option value="gyeongbuk">경북권</option>
-                    <option value="gangwon">강원권</option>
-                    <option value="jeju">제주권</option>
-                </select>
-            </div>
-            <div class="refresh-container">
-                <span id="lastRefresh">새로고침: </span>
-            </div>
+        <!-- Refresh Container -->
+        <div class="refresh-container">
+            <span id="lastRefresh">새로고침: </span>
         </div>
     </div>
     <script src="scripts.js"></script>
