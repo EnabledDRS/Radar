@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', async function () {
-    const regionSelect = document.getElementById('regionSelect');
     const slider = document.getElementById('timeSlider');
     const image = document.getElementById('sliderImage');
     const speedDisplay = document.getElementById('speedDisplayContainer');
@@ -7,30 +6,19 @@ document.addEventListener('DOMContentLoaded', async function () {
     const slowerButton = document.getElementById('slowerButton');
     const playPauseButton = document.getElementById('playPauseButton');
     const lastRefresh = document.getElementById('lastRefresh');
+    const latitudeInput = document.getElementById('latitude');
+    const longitudeInput = document.getElementById('longitude');
+    const submitButton = document.getElementById('submitButton');
 
-    const regionURLs = {
-        nationwide: "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1000&xp=720&yp=614&ht=700&zoom=2&lonlat=1&gis=1&legend=1&aws=1&gov=KMA&color=C4&wv=1&ht=800&topo=1&gc=T&gc_itv=60&tm=",
-        seoul: "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1000&xp=630&yp=790&ht=700&zoom=4.9&lonlat=1&gis=1&legend=1&aws=1&gov=KMA&color=C4&wv=1&ht=2000&topo=1&gc=T&gc_itv=60&tm=",
-        chungcheong: "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1000&xp=675&yp=680&ht=700&zoom=4.9&lonlat=1&gis=1&legend=1&aws=1&gov=KMA&color=C4&wv=1&ht=2000&topo=1&gc=T&gc_itv=60&tm=",
-        honam: "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1000&xp=630&yp=528&ht=700&zoom=4.9&lonlat=1&gis=1&legend=1&aws=1&gov=KMA&color=C4&wv=1&ht=2000&topo=1&gc=T&gc_itv=60&tm=",
-        gyeongnam: "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1000&xp=790&yp=550&ht=700&zoom=4.9&lonlat=1&gis=1&legend=1&aws=1&gov=KMA&color=C4&wv=1&ht=2000&topo=1&gc=T&gc_itv=60&tm=",
-        gyeongbuk: "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1000&xp=800&yp=660&ht=700&zoom=4.9&lonlat=1&gis=1&legend=1&aws=1&gov=KMA&color=C4&wv=1&ht=2000&topo=1&gc=T&gc_itv=60&tm=",
-        gangwon: "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1000&xp=760&yp=820&ht=700&zoom=4.9&lonlat=1&gis=1&legend=1&aws=1&gov=KMA&color=C4&wv=1&ht=2000&topo=1&gc=T&gc_itv=60&tm=",
-        jeju: "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1000&xp=610&yp=340&ht=700&zoom=4.9&lonlat=1&gis=1&legend=1&aws=1&gov=KMA&color=C4&wv=1&ht=2000&topo=1&gc=T&gc_itv=60&tm="
-    };
+    let baseURL = "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1100&lat=35.13&lon=129.10&ht=500&color&gis=1&sms=&legend=1&aws=1&gov=KMA&zoom=11.5&typ=1&color=C4&topo=1&wv=0&ht=800&gc=T&gc_itv=50&lonlat=0&center=1&tm=";
 
-    let baseURL = regionURLs['nationwide'];
     let intervalId;
     let isPlaying = true;
     let preloadedImages = [];
     let speed = parseInt(localStorage.getItem('speed')) || 500; // Default speed in milliseconds or saved value
 
-    // Load selected region from localStorage
-    const savedRegion = localStorage.getItem('selectedRegion');
-    if (savedRegion) {
-        baseURL = regionURLs[savedRegion];
-        regionSelect.value = savedRegion;
-    }
+    latitudeInput.placeholder = '위도(OO.xx)';
+    longitudeInput.placeholder = '경도(OOO.xx)';
 
     async function getInternetTime() {
         const response = await fetch('https://worldtimeapi.org/api/timezone/Asia/Seoul');
@@ -133,11 +121,26 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     });
 
-    regionSelect.addEventListener('change', function () {
-        baseURL = regionURLs[regionSelect.value];
-        localStorage.setItem('selectedRegion', regionSelect.value); // Save selected region to localStorage
-        updateImages();
+    submitButton.addEventListener('click', function () {
+        const latitude = latitudeInput.value;
+        const longitude = longitudeInput.value;
+
+        if (latitude && longitude) {
+            baseURL = `https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1100&lat=${latitude}&lon=${longitude}&ht=500&color&gis=1&sms=&legend=1&aws=1&gov=KMA&zoom=11.5&typ=1&color=C4&topo=1&wv=0&ht=800&gc=T&gc_itv=50&lonlat=0&center=1&tm=`;
+            localStorage.setItem('latitude', latitude);
+            localStorage.setItem('longitude', longitude);
+            location.reload();
+        } else {
+            alert('위도와 경도를 입력하세요.');
+        }
     });
+
+    // Load latitude and longitude from localStorage if available
+    const savedLatitude = localStorage.getItem('latitude');
+    const savedLongitude = localStorage.getItem('longitude');
+    if (savedLatitude && savedLongitude) {
+        baseURL = `https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1100&lat=${savedLatitude}&lon=${savedLongitude}&ht=500&color&gis=1&sms=&legend=1&aws=1&gov=KMA&zoom=11.5&typ=1&color=C4&topo=1&wv=0&ht=800&gc=T&gc_itv=50&lonlat=0&center=1&tm=`;
+    }
 
     // Initial load
     await updateImages();
