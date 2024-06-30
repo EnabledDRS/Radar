@@ -5,20 +5,31 @@ document.addEventListener('DOMContentLoaded', async function () {
     const fasterButton = document.getElementById('fasterButton');
     const slowerButton = document.getElementById('slowerButton');
     const playPauseButton = document.getElementById('playPauseButton');
+    const timeDisplay = document.getElementById('timeDisplay');
     const lastRefresh = document.getElementById('lastRefresh');
-    const latitudeInput = document.getElementById('latitude');
-    const longitudeInput = document.getElementById('longitude');
-    const submitButton = document.getElementById('submitButton');
+    const latitudeInput = document.getElementById('latitudeInput');
+    const longitudeInput = document.getElementById('longitudeInput');
+    const zoomInput = document.getElementById('zoomInput');
+    const latUpButton = document.getElementById('latUpButton');
+    const latDownButton = document.getElementById('latDownButton');
+    const lonUpButton = document.getElementById('lonUpButton');
+    const lonDownButton = document.getElementById('lonDownButton');
+    const zoomUpButton = document.getElementById('zoomUpButton');
+    const zoomDownButton = document.getElementById('zoomDownButton');
+    const confirmButton = document.getElementById('confirmButton');
+    const centerCheckbox = document.getElementById('centerCheckbox');
+    const windVectorCheckbox = document.getElementById('windVectorCheckbox');
+    const topographyCheckbox = document.getElementById('topographyCheckbox');
 
-    let baseURL = "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1100&lat=35.13&lon=129.10&ht=500&color&gis=1&sms=&legend=1&aws=1&gov=KMA&zoom=11.5&typ=1&color=C4&topo=1&wv=0&ht=800&gc=T&gc_itv=50&lonlat=0&center=1&tm=";
-
+    const baseURL = "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C4&qcd=HSO&obs=ECHO&map=HB&size=1000&gis=1&legend=1&aws=1&gov=KMA&gc=T&gc_itv=60&lonlat=0";
     let intervalId;
-    let isPlaying = true;
     let preloadedImages = [];
     let speed = parseInt(localStorage.getItem('speed')) || 500; // Default speed in milliseconds or saved value
-
-    latitudeInput.placeholder = '위도(OO.xx)';
-    longitudeInput.placeholder = '경도(OOO.xx)';
+    let imageTimes = [];
+    let center = localStorage.getItem('center') === '1' ? 1 : 0;
+    let windVector = localStorage.getItem('windVector') === '1' ? 1 : 0;
+    let topo = localStorage.getItem('topo') === '1' ? 1 : 0;
+    let isPlaying = localStorage.getItem('isPlaying') !== 'false'; // Default to true if not set
 
     async function getInternetTime() {
         const response = await fetch('https://worldtimeapi.org/api/timezone/Asia/Seoul');
@@ -33,56 +44,64 @@ document.addEventListener('DOMContentLoaded', async function () {
         const h = ('0' + date.getHours()).slice(-2);
         const min = ('0' + date.getMinutes()).slice(-2);
         const s = ('0' + date.getSeconds()).slice(-2);
+
         if (type === "url") {
-            return `${y}${m}${d}${h}${min}`;
+            return `${y}${m}${d}${h}${min}${s}`;
         } else {
-            return `${y}.${m}.${d} ${h}:${min}:${s}`;
+            return `${y}년 ${m}월 ${d}일 ${h}시 ${min}분`;
         }
     }
 
-    async function generateImageURLs() {
+    async function generateImageURLs(lat, lon, zoom) {
         const urls = [];
         const nowKST = await getInternetTime();
-
-        nowKST.setMinutes(Math.floor(nowKST.getMinutes() / 5) * 5);
+        const interval = 5;
+        nowKST.setMinutes(Math.floor(nowKST.getMinutes() / interval) * interval);
         nowKST.setSeconds(0);
         nowKST.setMilliseconds(0);
 
-        for (let i = 0; i < 24; i++) {
-            const date = new Date(nowKST.getTime() - i * 5 * 60000);
+        imageTimes = [];
+
+        for (let i = 0; i < 36; i++) {
+            const date = new Date(nowKST.getTime() - i * interval * 60000);
             const formattedDate = formatDate(date);
-            urls.push(baseURL + formattedDate);
+            urls.push(`${baseURL}&lat=${lat.toFixed(2)}&lon=${lon.toFixed(2)}&zoom=${zoom}&ht=1000&center=${center}&wv=${windVector}&topo=${topo}&tm=${formattedDate}`);
+            imageTimes.push(date);
         }
         return urls.reverse();
     }
 
-    async function updateImages() {
-        const images = await generateImageURLs();
-        preloadedImages = images.map(url => {
+    async function updateImages(lat, lon, zoom) {
+        const images = await generateImageURLs(lat, lon, zoom);
+        preloadedImages = images.map((url, index) => {
             const img = new Image();
             img.src = url;
-            return img;
+            return { img, time: imageTimes[imageTimes.length - 1 - index] };
         });
 
-        // Update the image source based on slider value
+        slider.max = 36;
         slider.addEventListener('input', function () {
             const index = slider.value - 1;
-            image.src = preloadedImages[index].src;
+            image.src = preloadedImages[index].img.src;
+            timeDisplay.textContent = formatDate(preloadedImages[index].time, "display");
         });
 
-        // Initialize the first image
-        image.src = preloadedImages[0].src;
+        image.src = preloadedImages[0].img.src;
+        image.style.width = "100%";
+        timeDisplay.textContent = formatDate(preloadedImages[0].time, "display");
 
-        // Set up the automatic slide show
-        startAutoPlay();
+        if (isPlaying) {
+            startAutoPlay();
+        }
     }
 
     function startAutoPlay() {
         clearInterval(intervalId);
         intervalId = setInterval(() => {
-            slider.value = (parseInt(slider.value) % 24) + 1;
+            slider.value = (parseInt(slider.value) % 36) + 1;
             const index = slider.value - 1;
-            image.src = preloadedImages[index].src;
+            image.src = preloadedImages[index].img.src;
+            timeDisplay.textContent = formatDate(preloadedImages[index].time, "display");
         }, speed);
     }
 
@@ -95,13 +114,14 @@ document.addEventListener('DOMContentLoaded', async function () {
             playPauseButton.textContent = '정지';
         }
         isPlaying = !isPlaying;
+        localStorage.setItem('isPlaying', isPlaying);
     });
 
     fasterButton.addEventListener('click', function () {
         if (speed > 100) {
             speed -= 100;
             speedDisplay.textContent = `${(speed / 1000).toFixed(1)} s/frame`;
-            localStorage.setItem('speed', speed); // Save speed to localStorage
+            localStorage.setItem('speed', speed);
             if (isPlaying) {
                 clearInterval(intervalId);
                 startAutoPlay();
@@ -113,7 +133,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (speed < 2000) {
             speed += 100;
             speedDisplay.textContent = `${(speed / 1000).toFixed(1)} s/frame`;
-            localStorage.setItem('speed', speed); // Save speed to localStorage
+            localStorage.setItem('speed', speed);
             if (isPlaying) {
                 clearInterval(intervalId);
                 startAutoPlay();
@@ -121,37 +141,77 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     });
 
-    submitButton.addEventListener('click', function () {
-        const latitude = latitudeInput.value;
-        const longitude = longitudeInput.value;
-
-        if (latitude && longitude) {
-            baseURL = `https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1100&lat=${latitude}&lon=${longitude}&ht=500&color&gis=1&sms=&legend=1&aws=1&gov=KMA&zoom=11.5&typ=1&color=C4&topo=1&wv=0&ht=800&gc=T&gc_itv=50&lonlat=0&center=1&tm=`;
-            localStorage.setItem('latitude', latitude);
-            localStorage.setItem('longitude', longitude);
-            location.reload();
-        } else {
-            alert('위도와 경도를 입력하세요.');
-        }
+    latUpButton.addEventListener('click', function () {
+        latitudeInput.stepUp();
+        latitudeInput.value = parseFloat(latitudeInput.value).toFixed(2);
     });
 
-    // Load latitude and longitude from localStorage if available
-    const savedLatitude = localStorage.getItem('latitude');
-    const savedLongitude = localStorage.getItem('longitude');
-    if (savedLatitude && savedLongitude) {
-        baseURL = `https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?cmp=HSP&color=C2&qcd=HSO&obs=ECHO&map=HB&size=1100&lat=${savedLatitude}&lon=${savedLongitude}&ht=500&color&gis=1&sms=&legend=1&aws=1&gov=KMA&zoom=11.5&typ=1&color=C4&topo=1&wv=0&ht=800&gc=T&gc_itv=50&lonlat=0&center=1&tm=`;
-    }
+    latDownButton.addEventListener('click', function () {
+        latitudeInput.stepDown();
+        latitudeInput.value = parseFloat(latitudeInput.value).toFixed(2);
+    });
 
-    // Initial load
-    await updateImages();
+    lonUpButton.addEventListener('click', function () {
+        longitudeInput.stepUp();
+        longitudeInput.value = parseFloat(longitudeInput.value).toFixed(2);
+    });
 
-    // Display the correct speed on page load
+    lonDownButton.addEventListener('click', function () {
+        longitudeInput.stepDown();
+        longitudeInput.value = parseFloat(longitudeInput.value).toFixed(2);
+    });
+
+    zoomUpButton.addEventListener('click', function () {
+        zoomInput.stepUp();
+    });
+
+    zoomDownButton.addEventListener('click', function () {
+        zoomInput.stepDown();
+    });
+
+    confirmButton.addEventListener('click', function () {
+        const lat = parseFloat(latitudeInput.value);
+        const lon = parseFloat(longitudeInput.value);
+        const zoom = parseInt(zoomInput.value);
+        updateImages(lat, lon, zoom);
+    });
+
+    centerCheckbox.addEventListener('change', function () {
+        center = centerCheckbox.checked ? 1 : 0;
+        localStorage.setItem('center', center);
+        const lat = parseFloat(latitudeInput.value);
+        const lon = parseFloat(longitudeInput.value);
+        const zoom = parseInt(zoomInput.value);
+        updateImages(lat, lon, zoom);
+    });
+
+    windVectorCheckbox.addEventListener('change', function () {
+        windVector = windVectorCheckbox.checked ? 1 : 0;
+        localStorage.setItem('windVector', windVector);
+        const lat = parseFloat(latitudeInput.value);
+        const lon = parseFloat(longitudeInput.value);
+        const zoom = parseInt(zoomInput.value);
+        updateImages(lat, lon, zoom);
+    });
+
+    topographyCheckbox.addEventListener('change', function () {
+        topo = topographyCheckbox.checked ? 1 : 0;
+        localStorage.setItem('topo', topo);
+        const lat = parseFloat(latitudeInput.value);
+        const lon = parseFloat(longitudeInput.value);
+        const zoom = parseInt(zoomInput.value);
+        updateImages(lat, lon, zoom);
+    });
+
+    latitudeInput.value = parseFloat(latitudeInput.value).toFixed(2);
+    longitudeInput.value = parseFloat(longitudeInput.value).toFixed(2);
+
+    await updateImages(parseFloat(latitudeInput.value), parseFloat(longitudeInput.value), parseInt(zoomInput.value));
+
     speedDisplay.textContent = `${(speed / 1000).toFixed(1)} s/frame`;
 
-    // Update last refresh time
     lastRefresh.textContent += formatDate(new Date(), "display");
 
-    // Auto refresh every 5 minutes (300,000 milliseconds)
     setInterval(() => {
         location.reload();
     }, 300000);
