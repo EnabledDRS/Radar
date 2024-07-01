@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AmeRadar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Image Container -->
+        <div class="image-container">
+            <img id="sliderImage" src="" alt="Weather Image">
+        </div>
+        <!-- Time Display -->
+        <div id="timeDisplay" class="time-display">yyyy년 m월 d일 hh시 mm분</div>
+        <!-- Time Slider -->
+        <div class="slider-wrapper">
+            <div class="slider-container">
+                <input type="range" min="1" max="36" value="1" class="slider" id="timeSlider">
+            </div>
+        </div>
+        <!-- Speed Controls -->
+        <div class="speed-controls">
+            <button id="fasterButton">빠르게</button>
+            <div id="speedDisplayContainer">0.5 s/frame</div>
+            <button id="slowerButton">느리게</button>
+            <button id="playPauseButton">정지</button>
+        </div>
+        <!-- Latitude, Longitude, and Zoom Input Container -->
+        <div class="lat-lon-container">
+            <div class="input-group">
+                <label for="latitudeInput">위도</label>
+                <input type="number" id="latitudeInput" step="0.01" value="35.90">
+                <div class="button-group">
+                    <button id="latUpButton">▲</button>
+                    <button id="latDownButton">▼</button>
+                </div>
+            </div>
+            <div class="input-group">
+                <label for="longitudeInput">경도</label>
+                <input type="number" id="longitudeInput" step="0.01" value="127.80">
+                <div class="button-group">
+                    <button id="lonUpButton">▲</button>
+                    <button id="lonDownButton">▼</button>
+                </div>
+            </div>
+            <div class="input-group">
+                <label for="zoomInput">배율</label>
+                <input type="number" id="zoomInput" step="1" min="1" max="115" value="2">
+                <div class="button-group">
+                    <button id="zoomUpButton">▲</button>
+                    <button id="zoomDownButton">▼</button>
+                </div>
+            </div>
+            <button id="confirmButton" class="confirm-button">확인</button>
+        </div>
+        <!-- Center, Wind Vector, and Topography Checkboxes -->
+        <div class="checkbox-container">
+            <label for="centerCheckbox">동심원</label>
+            <input type="checkbox" id="centerCheckbox">
+            <label for="windVectorCheckbox">바람벡터</label>
+            <input type="checkbox" id="windVectorCheckbox">
+            <label for="topographyCheckbox">지형</label>
+            <input type="checkbox" id="topographyCheckbox">
+        </div>
+        <!-- Source Container -->
+        <div class="source-container">
+            <div class="source-wrapper">
+                <img src="https://www.weather.go.kr/w/resources/image/mark03_22.png" alt="공공누리 제2유형" class="public-domain-image">
+                <span id="sourceText">출처: 기상청</span>
+            </div>
+        </div>
+    </div>
+    <script src="scripts.js"></script>
+</body>
+</html>
